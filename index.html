@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="start-screen" class="screen">
+            <h1>Meditation Game</h1>
+            <p>Click when you see numbers containing 1 or 6</p>
+            <button id="start-button">Start</button>
+        </div>
+        <div id="game-screen" class="screen hidden">
+            <div id="number">100</div>
+        </div>
+        <div id="result-screen" class="screen hidden">
+            <h2>Results</h2>
+            <p>Correct clicks: <span id="correct-clicks">0</span></p>
+            <p>Concentration level: <span id="concentration">0</span>%</p>
+            <p class="hint">Double click anywhere to restart</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
