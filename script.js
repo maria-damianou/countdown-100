@@ -11,20 +11,24 @@ const resultScreen = document.getElementById('result-screen');
 const startButton = document.getElementById('start-button');
 const numberDisplay = document.getElementById('number');
 const correctClicksDisplay = document.getElementById('correct-clicks');
+const incorrectClicksDisplay = document.getElementById('incorrect-clicks');
+const expectedClicksDisplay = document.getElementById('expected-clicks');
 const concentrationDisplay = document.getElementById('concentration');
 
 // Game configuration
 const INITIAL_NUMBER = 100;     // Starting number
-const TIME_INTERVAL = 1000;     // Time between number changes (ms)
+const TIME_INTERVAL = 1500;     // Time between number changes (ms)
 const RANDOM_CHANCE = 10;       // 1 in X chance for random number skip
 
 // Game state variables
 let currentNumber = INITIAL_NUMBER;  // Current number being displayed
 let correctClicks = 0;              // Number of correct clicks by the user
+let incorrectClicks = 0;               // Number of wrong clicks by the user
 let expectedClicks = 0;             // Total number of clicks needed for perfect score
 let gameInterval;                   // Holds the interval timer
 let canClick = false;               // Flag to control when clicks are allowed
 let randomNumbersToClick = [];      // Array to store numbers that were randomly skipped
+let clickedNumbers = new Set();     // Set to track which numbers have been clicked
 
 /**
  * Checks if a number should be clicked (last digit is 1 or 6)
@@ -43,15 +47,10 @@ function shouldClick(num) {
  */
 function shouldJump(num) {
     const lastDigit = num % 10;
-    return lastDigit !== 7 && lastDigit !== 2;
+    return lastDigit !== 7 && lastDigit !== 2 && num !== 1;
 }
 
-// Calculate total expected clicks by counting numbers ending in 1 or 6
-for (let i = INITIAL_NUMBER; i >= 0; i--) {
-    if (shouldClick(i)) {
-        expectedClicks++;
-    }
-}
+
 
 /**
  * Generates a random trigger for number skipping
@@ -60,7 +59,6 @@ for (let i = INITIAL_NUMBER; i >= 0; i--) {
  */
 function randomTrigger(chance) {
     const randomNumber = Math.floor(Math.random() * chance);
-    console.log('Random trigger number:', randomNumber);
     return randomNumber === 1;
 }
 
@@ -85,7 +83,17 @@ function startGame() {
     // Reset game state
     currentNumber = INITIAL_NUMBER;
     correctClicks = 0;
+    incorrectClicks = 0;
+    expectedClicks = 0;
     randomNumbersToClick = [];
+    clickedNumbers.clear();  // Clear clicked numbers tracking
+
+    // Calculate total expected clicks by counting numbers ending in 1 or 6
+    for (let i = INITIAL_NUMBER; i >= 0; i--) {
+        if (shouldClick(i)) {
+            expectedClicks++;
+        }
+    }
     
     // Initialize UI
     showScreen(gameScreen);
@@ -107,6 +115,7 @@ function startGame() {
             // Update expected clicks if the skipped number wasn't already a target
             if (!shouldClick(currentNumber)) {
                 expectedClicks++;
+                console.log('Expected clicks increased to:', expectedClicks);
             }
         } else {
             currentNumber--;
@@ -127,11 +136,15 @@ function endGame() {
     canClick = false;
     
     // Calculate final score
-    const concentration = Math.round((correctClicks / expectedClicks) * 100);
+    const correctClicksMinusIncorrectClicks = correctClicks - incorrectClicks;
+    const concentration = Math.round((correctClicksMinusIncorrectClicks / expectedClicks) * 100);
     
     // Update UI with results
     correctClicksDisplay.textContent = correctClicks;
+    incorrectClicksDisplay.textContent = incorrectClicks;
+    expectedClicksDisplay.textContent = expectedClicks;
     concentrationDisplay.textContent = concentration;
+    console.log('correctClicks - incorrectClicks:', correctClicksMinusIncorrectClicks);
     showScreen(resultScreen);
 }
 
@@ -139,7 +152,6 @@ function endGame() {
 
 // Start button click - begins the game
 startButton.addEventListener('click', () => {
-    console.log('Start button clicked');
     startGame();
 });
 
@@ -149,20 +161,25 @@ gameScreen.addEventListener('click', (e) => {
         console.log('Clicks not allowed right now');
         return;
     }
-    
-    // Log game state for debugging
-    console.log('Game screen clicked');
-    console.log('Current number:', currentNumber);
-    console.log('Should click?', shouldClick(currentNumber));
-    console.log('Random number to click now:', randomNumbersToClick.includes(currentNumber));
+
+    // Check if this number has already been clicked
+    if (clickedNumbers.has(currentNumber)) {
+        console.log('Number already clicked:', currentNumber);
+        return;
+    }
 
     // Handle correct clicks
     if (shouldClick(currentNumber)) {
         correctClicks++;
+        clickedNumbers.add(currentNumber);
         console.log('Correct click! Total correct clicks:', correctClicks);
     } else if (randomNumbersToClick.includes(currentNumber) && !shouldClick(currentNumber)) {
         correctClicks++;
+        clickedNumbers.add(currentNumber);
         console.log('Correct click! Total correct clicks:', correctClicks);
+    } else if (!randomNumbersToClick.includes(currentNumber) && !shouldClick(currentNumber)) {
+        incorrectClicks++;
+        console.log('Incorrect click:', currentNumber);
     }
 });
 

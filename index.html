@@ -9,8 +9,9 @@
 <body>
     <div class="container">
         <div id="start-screen" class="screen">
-            <h1>Meditation Game</h1>
-            <p>Click when you see numbers containing 1 or 6</p>
+            <h1>Epignosi 100</h1>
+            <p>Click numbers that end with 1 or 6</p>
+            <p>Also click when a number gets skipped</p>
             <button id="start-button">Start</button>
         </div>
         <div id="game-screen" class="screen hidden">
@@ -19,6 +20,8 @@
         <div id="result-screen" class="screen hidden">
             <h2>Results</h2>
             <p>Correct clicks: <span id="correct-clicks">0</span></p>
+            <p>Incorrect clicks: <span id="incorrect-clicks">0</span></p>
+            <p>Expected clicks: <span id="expected-clicks">0</span></p>
             <p>Concentration level: <span id="concentration">0</span>%</p>
             <p class="hint">Double click anywhere to restart</p>
         </div>
