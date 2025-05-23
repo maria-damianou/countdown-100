@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Concentration Game
  * A game where players must click numbers ending in 1 or 6, and special randomly skipped numbers.
@@ -49,8 +51,6 @@ function shouldJump(num) {
     const lastDigit = num % 10;
     return lastDigit !== 7 && lastDigit !== 2 && num !== 1;
 }
-
-
 
 /**
  * Generates a random trigger for number skipping
