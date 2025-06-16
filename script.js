@@ -17,6 +17,10 @@ const incorrectClicksDisplay = document.getElementById('incorrect-clicks');
 const expectedClicksDisplay = document.getElementById('expected-clicks');
 const concentrationDisplay = document.getElementById('concentration');
 
+// Audio element
+const clickSound = new Audio('sounds/click.mp3');
+clickSound.volume = 0.5; 
+
 // Game configuration
 const INITIAL_NUMBER = 100;     // Starting number
 const TIME_INTERVAL = 1500;     // Time between number changes (ms)
@@ -148,6 +152,14 @@ function endGame() {
     showScreen(resultScreen);
 }
 
+/**
+ * Plays the click sound
+ */
+function playClickSound() {
+    clickSound.currentTime = 0; // Reset the sound to start
+    clickSound.play().catch(error => console.log('Error playing sound:', error));
+}
+
 // Event Listeners
 
 // Start button click - begins the game
@@ -161,6 +173,9 @@ gameScreen.addEventListener('click', (e) => {
         console.log('Clicks not allowed right now');
         return;
     }
+
+    // Play click sound for any click
+    playClickSound();
 
     // Check if this number has already been clicked
     if (clickedNumbers.has(currentNumber)) {
