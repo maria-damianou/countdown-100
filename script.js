@@ -39,7 +39,7 @@ for (let i = 0; i < POOL_SIZE; i++) {
 let currentAudioIndex = 0;
 
 // Game configuration
-const INITIAL_NUMBER = 10;     // Starting number
+const INITIAL_NUMBER = 100;     // Starting number
 const TIME_INTERVAL = 1500;     // Time between number changes (ms)
 const RANDOM_CHANCE = 10;       // 1 in X chance for random number skip
 
