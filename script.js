@@ -19,10 +19,27 @@ const concentrationDisplay = document.getElementById('concentration');
 
 // Audio element
 const clickSound = new Audio('sounds/click.mp3');
-clickSound.volume = 0.5; 
+clickSound.volume = 0.5;
+clickSound.preload = 'auto';  // Preload the sound
+clickSound.load();  // Force load the sound
+
+// Create a pool of audio elements for better performance
+const audioPool = [];
+const POOL_SIZE = 3;  // Number of audio elements in the pool
+
+// Initialize audio pool
+for (let i = 0; i < POOL_SIZE; i++) {
+    const audio = new Audio('sounds/click.mp3');
+    audio.volume = 0.7;
+    audio.preload = 'auto';
+    audio.load();
+    audioPool.push(audio);
+}
+
+let currentAudioIndex = 0;
 
 // Game configuration
-const INITIAL_NUMBER = 100;     // Starting number
+const INITIAL_NUMBER = 10;     // Starting number
 const TIME_INTERVAL = 1500;     // Time between number changes (ms)
 const RANDOM_CHANCE = 10;       // 1 in X chance for random number skip
 
@@ -143,21 +160,35 @@ function endGame() {
     const correctClicksMinusIncorrectClicks = correctClicks - incorrectClicks;
     const concentration = Math.round((correctClicksMinusIncorrectClicks / expectedClicks) * 100);
     
-    // Update UI with results
+    /* Update UI with results
     correctClicksDisplay.textContent = correctClicks;
     incorrectClicksDisplay.textContent = incorrectClicks;
     expectedClicksDisplay.textContent = expectedClicks;
     concentrationDisplay.textContent = concentration;
     console.log('correctClicks - incorrectClicks:', correctClicksMinusIncorrectClicks);
+    */
+
+    // Show congratulatory message
+    const timeElapsed = ((INITIAL_NUMBER * TIME_INTERVAL) / 1000).toFixed(0);
+    concentrationDisplay.textContent = `Congratulations! ${timeElapsed} seconds have passed by!`;
+    
     showScreen(resultScreen);
 }
 
 /**
- * Plays the click sound
+ * Plays the click sound using the audio pool for better performance
  */
 function playClickSound() {
-    clickSound.currentTime = 0; // Reset the sound to start
-    clickSound.play().catch(error => console.log('Error playing sound:', error));
+    try {
+        const audio = audioPool[currentAudioIndex];
+        audio.currentTime = 0;
+        audio.play().catch(error => console.log('Error playing sound:', error));
+        
+        // Move to next audio element in pool
+        currentAudioIndex = (currentAudioIndex + 1) % POOL_SIZE;
+    } catch (error) {
+        console.log('Error in playClickSound:', error);
+    }
 }
 
 // Event Listeners
