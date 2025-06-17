@@ -19,7 +19,7 @@ const concentrationDisplay = document.getElementById('concentration');
 
 // Audio element
 const clickSound = new Audio('sounds/click.mp3');
-clickSound.volume = 0.5;
+clickSound.volume = 1;
 clickSound.preload = 'auto';  // Preload the sound
 clickSound.load();  // Force load the sound
 
@@ -30,7 +30,7 @@ const POOL_SIZE = 3;  // Number of audio elements in the pool
 // Initialize audio pool
 for (let i = 0; i < POOL_SIZE; i++) {
     const audio = new Audio('sounds/click.mp3');
-    audio.volume = 0.7;
+    audio.volume = 1;
     audio.preload = 'auto';
     audio.load();
     audioPool.push(audio);
