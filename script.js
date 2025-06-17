@@ -170,7 +170,7 @@ function endGame() {
 
     // Show congratulatory message
     const timeElapsed = ((INITIAL_NUMBER * TIME_INTERVAL) / 1000).toFixed(0);
-    concentrationDisplay.textContent = `Congratulations! ${timeElapsed} seconds have passed by!`;
+    concentrationDisplay.textContent = `Congratulations! Almost ${timeElapsed} seconds have passed by!`;
     
     showScreen(resultScreen);
 }
